@@ -82,28 +82,29 @@ router.post(
         });
       });
     }
-      //อัปโหลดรูปภาพ
-      if (req.file) {
-        var projectImage = req.file.filename;
-      } else {
-        var projectImage = "No Image";
-      }
-      //บันทึกข้อมูล
-      blogdata = [];
-      (blogdata["title"] = req.body.title),
-        (blogdata["content"] = req.body.content),
-        (blogdata["img"] = projectImage),
-        (blogdata["author"] = req.body.author),
-        (blogdata["category"] = req.body.category),
-        (blogdata["date"] = new Date()),
-        (blogdata["Userid"] = req.body.Userid);
-      console.log(blogdata);
+    //อัปโหลดรูปภาพ
+    if (req.file) {
+      var projectImage = req.file.filename;
+    } else {
+      var projectImage = "No Image";
+    }
+    //บันทึกข้อมูล
+    blogdata = [];
+    (blogdata["title"] = req.body.title),
+      (blogdata["content"] = req.body.content),
+      (blogdata["img"] = projectImage),
+      (blogdata["author"] = req.body.author),
+      (blogdata["category"] = req.body.category),
+      (blogdata["date"] = new Date()),
+      (blogdata["Userid"] = req.body.Userid);
+    console.log(blogdata);
 
-      blogModel.AddBlog(blogdata, function (err, success) {
-        if (err) throw err;
-      });
-      res.redirect("/Blog");
-  });
+    blogModel.AddBlog(blogdata, function (err, success) {
+      if (err) throw err;
+    });
+    res.redirect("/Blog");
+  }
+);
 
 //myBlog
 router.get("/Myblog/:id", function (req, res, next) {
@@ -191,48 +192,69 @@ router.get("/Edit/:id", function (req, res, next) {
   });
 });
 
+// //EditBlog Update กรณีอัปโหลดรูป
+
+// router.post("/Edit/:id", upload.single("img") , function (req, res, next) {
+//   id = req.params.id;
+//   users = req.user;
+
+//   //แก้ไข และ Upload รูปภาพ
+//   if (req.file) {
+//     var projectImage = req.file.filename;
+//     let check = true
+//     blogdata = [];
+//     (blogdata["title"] = req.body.title),
+//       (blogdata["content"] = req.body.content),
+//       (blogdata["img"] = projectImage),
+//       (blogdata["author"] = req.body.author),
+//       (blogdata["category"] = req.body.category),
+//       (blogdata["date"] = new Date()),
+//       (blogdata["Userid"] = req.body.Userid);
+//     blogModel.UpdateBlog(blogdata, id , check , function(err,success){
+//       if (err) throw err;
+//     });
+//     res.location("/Blog");
+//     res.redirect("/Blog");
+//   }
+
+//   //ไม่มีการอัปโหลดรูป
+//   else {
+//     let check = false
+//     blogdata = [];
+//     (blogdata["title"] = req.body.title),
+//       (blogdata["content"] = req.body.content),
+//       (blogdata["author"] = req.body.author),
+//       (blogdata["category"] = req.body.category),
+//       (blogdata["date"] = new Date()),
+//       (blogdata["Userid"] = req.body.Userid);
+//     console.log(blogdata);
+//     blogModel.UpdateBlog(blogdata, id, check,  function (err, success) {
+//       if (err) throw err;
+//     });
+//     res.location("/Blog");
+//     res.redirect("/Blog");
+//   }
+// });
+
 //EditBlog Update
 
-router.post("/Edit/:id", upload.single("img") , function (req, res, next) {
+router.post("/Edit/:id", function (req, res, next) {
   id = req.params.id;
   users = req.user;
 
-  //แก้ไข และ Upload รูปภาพ
-  if (req.file) {
-    var projectImage = req.file.filename;
-    let check = true
-    blogdata = [];
-    (blogdata["title"] = req.body.title),
-      (blogdata["content"] = req.body.content),
-      (blogdata["img"] = projectImage),
-      (blogdata["author"] = req.body.author),
-      (blogdata["category"] = req.body.category),
-      (blogdata["date"] = new Date()),
-      (blogdata["Userid"] = req.body.Userid);
-    blogModel.UpdateBlog(blogdata, id , check , function(err,success){
-      if (err) throw err;
-    });
-    res.location("/Blog");
-    res.redirect("/Blog");
-  } 
-
-  //ไม่มีการอัปโหลดรูป
-  else {
-    let check = false
-    blogdata = [];
-    (blogdata["title"] = req.body.title),
-      (blogdata["content"] = req.body.content),
-      (blogdata["author"] = req.body.author),
-      (blogdata["category"] = req.body.category),
-      (blogdata["date"] = new Date()),
-      (blogdata["Userid"] = req.body.Userid);
-    console.log(blogdata);
-    blogModel.UpdateBlog(blogdata, id, check,  function (err, success) {
-      if (err) throw err;
-    });
-    res.location("/Blog");
-    res.redirect("/Blog");
-  }
+  blogdata = [];
+  (blogdata["title"] = req.body.title),
+    (blogdata["content"] = req.body.content),
+    (blogdata["img"] = req.body.img),
+    (blogdata["author"] = req.body.author),
+    (blogdata["category"] = req.body.category),
+    (blogdata["date"] = new Date()),
+    (blogdata["Userid"] = req.body.Userid);
+  blogModel.UpdateBlog(blogdata, id, function (err, success) {
+    if (err) throw err;
+  });
+  res.location("/Blog");
+  res.redirect("/Blog");
 });
 
 //delete Blog

@@ -91,9 +91,8 @@ module.exports.Categorytitle = function (title, callback) {
 };
 
 //Update Editblog
-module.exports.UpdateBlog = function (blogdata, id, check, callback) {
+module.exports.UpdateBlog = function (blogdata, id, callback) {
   console.log(id);
-  if (check) {
     blogs.update(
       {
         _id: id,
@@ -115,29 +114,7 @@ module.exports.UpdateBlog = function (blogdata, id, check, callback) {
         }
       }
     );
-  } else {
-    blogs.update(
-      {
-        _id: id,
-      },
-      {
-        $set: {
-          title: blogdata["title"],
-          content: blogdata["content"],
-          author: blogdata["author"],
-          category: blogdata["category"],
-        },
-      },
-      function (err, success) {
-        if (err) {
-          res.send(err);
-        } else {
-          callback(null, success);
-        }
-      }
-    );
   }
-};
 
 //delete Blog
 module.exports.DeleteBlog = function (id, callback) {
