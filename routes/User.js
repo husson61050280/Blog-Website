@@ -166,7 +166,7 @@ router.get("/EditProfile/:id", function (req, res, next) {
   id = req.params.id;
   UserModel.getUserById(id, function (err, users) {
     if (err) throw err;
-    res.render("EditProfile", { users: users, user: req.user });
+    res.render("editProfile", { users: users, user: req.user });
   });
 });
 
