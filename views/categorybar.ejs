@@ -1,0 +1,17 @@
+<h5>Category</h5>
+<div class="list-group">
+ 
+  <% categories.forEach(function(category) { %>
+  <a href="/Blog/GroupByCategory/<%=category.title%>"><button type="button" class="list-group-item list-group-item-action">
+    <%=category.title%>
+  </button></a>
+  <% }) %>
+  <br>
+</div>
+
+<style>
+  .list-group :hover {
+    transition: 0.3s;
+    background-color: #00BFFF;
+  }
+</style>

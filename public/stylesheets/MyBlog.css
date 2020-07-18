@@ -1,0 +1,62 @@
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background-color: #f2f2f2;
+}
+
+h1 {
+  font-size: 110px;
+  font-weight: 900;
+  line-height: 1.1;
+  color: #fff;
+  /* บน ขวา ล่าง ซ้าย */
+  margin: 0 0 20px 0;
+}
+
+h4 {
+  font-size: 28px;
+  font-weight: 300;
+  color: #fff;
+  margin: 0;
+}
+
+.hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-image {
+  background-image: url("https://media-exp1.licdn.com/dms/image/C561BAQEazVZ-tlQZtg/company-background_10000/0?e=2159024400&v=beta&t=1BGrqFcuQVay8ltLFmf6Y0-1Mw7bhC9gupvsQFWkeek");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 25;
+}
+
+.hero-content {
+  text-align: center;
+  position: relative;
+  z-index: 50;
+}
+
+#content {
+  margin-top: 30px;
+}
+
+#category {
+  margin: 10px;
+}
+
+#blog {
+  padding-top: 20px;
+}

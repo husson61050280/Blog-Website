@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Blog</title>
+    <script src="https://cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
+</head>
+
+<body>
+
+    <%- include layout %>
+
+    <div class="container mt-5">
+        <% users.forEach(function(user){ %>
+        <h2 align="center">Welcome : <%= user.first_name %> <%= user.last_name %></h2>
+    
+        <h4 align="center">แก้ไขบทความ</h4>
+        <br>
+        <hr>
+        <br>
+        <% if(locals.errors) { %>
+        <ul class="alert alert-danger" role="alert">
+            <% Object.values(errors).forEach(function(error){ %>
+            <li><%=error.msg %></li>
+            <%})%>
+        </ul>
+        <% } %>
+        <% blogs.forEach(function(blog){%>
+        <form class="form-group " action="/Blog/Edit/<%=blog._id%>" method="post" enctype="multipart/form-data">
+            <% if(locals.categories) { %>
+            <div class="form-group">
+                <label for="">ประเภทบทความ</label>
+                <select class="form-control" name="category">
+                    <% categories.forEach(function(category){ %>
+                    <option value="<%= category.title %>"><%= category.title %></option>
+                    <% }); %>
+                </select>
+            </div>
+            <% } %>
+             
+            <div class="form-group">
+                <label for="">หัวข้อ</label>
+                <input type="text" name="title" value="<%=blog.title%>" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="">เนื้อหา</label>
+                <textarea name=content rows="8" cols="80"><%-blog.content%></textarea>
+
+            </div>
+
+            <div class="form-group">
+                <label for="">ภาพปก</label>
+                <input type="file" name="img" value="images/<%=blog.img%>" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="">ผู้เขียน</label>
+                <input type="text" name="author" value="<%-blog.author%>" class="form-control">
+            </div>
+
+            <!-- เก็บ UserID -->
+            <div class="form-group">
+                <input type="hidden" name="Userid" value="<%= user._id %>" class="form-control">
+            </div>
+            <!-- for user -->
+            <% }) %>
+            <!-- for blog -->
+            <% }); %>
+            <div class="form-group">
+                <input type="submit" class="btn btn-primary" value="Save">
+            </div>
+        </form>
+
+    </div>
+
+    <style>
+        .container {
+            width: 50%;
+        }
+    </style>
+
+
+    <script>
+        CKEDITOR.replace('content');
+    </script>
+
+</body>
+
+</html>

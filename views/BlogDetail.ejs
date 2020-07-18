@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Blogs</title>
+
+</head>
+
+
+<body>
+    
+    <% include Layout %>
+    <% blogs.forEach(function(blog) {%>
+
+
+    <div class="Category">
+        <a href="/Blog/GroupByCategory/<%=blog.category%>"><button type="button" class="btn btn-outline-dark"><%= blog.category%></button></a>
+    </div>
+
+    <div class="head">
+        <br>
+        <h2><%= blog.title%></h2>
+        <br>
+    </div>
+
+    <div class="image">
+        <img src="/images/<%=blog.img%>" alt="">
+    </div>
+
+    <div class="content mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-10"><%-blog.content%></div>
+                <div class="col-sm-1"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-10"><h5>Author : <%= blog.author%></h5></div>
+                <div class="col-sm-1"> </div>
+            </div>
+        </div>
+       
+    </div>
+    <% }) %>
+
+</body>
+
+<style>
+    .Category {
+        border-radius: 10px;
+        text-align: center;
+        margin-top: 30px;
+
+    }
+
+    .head {
+        margin: 20px;
+        text-align: center;
+    }
+
+    .head h2 {
+        font-size: 60px;
+        font-weight: 350;
+        line-height: 1.1;
+    }
+
+    .image {
+        text-align: center;
+    }
+    .image img {
+        width: 800px;
+        height: 370px ;
+        
+    }
+
+    .footer{
+       margin: 30px 30px;
+       text-align: right;
+    }
+</style>
+
+</html>
