@@ -1,6 +1,6 @@
 //import database connectDB
 var mongodb = require("mongodb");
-var db = require("monk")("mongodb://heroku_9k21qtdq:m28uq165q6oas1j9gktrsfh0f8@ds123311.mlab.com:23311/heroku_9k21qtdq");
+var db = require("monk")("mongodb://heroku_m18k90bt:mb8nu695rnnfkvr9vmamratd6k@ds235243.mlab.com:35243/heroku_m18k90bt");
 
 
 //Global Connect Database
