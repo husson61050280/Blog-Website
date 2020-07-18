@@ -81,8 +81,8 @@ app.use(function(req, res, next) {
 
 
 
-//การตัดข้อความให้สั้นลง
-app.locals.descriptionText = function(text , length){
+//ตัดข้อความแสดงผลหน้าเว็บให้สั้นลง
+app.locals.descriptionText = function(text,length){
   return text.substring(0,length);
 }
 
