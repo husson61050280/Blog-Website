@@ -236,7 +236,7 @@ router.post("/Edit/:id", upload.single("img") , function (req, res, next) {
 });
 
 //delete Blog
-router.post("/Delete/:id", function (req, res, next) {
+router.get("/Delete/:id", function (req, res, next) {
   id = req.params.id;
   blogModel.DeleteBlog(id, function (err, success) {
     if (err) throw err;
