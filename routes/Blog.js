@@ -151,7 +151,7 @@ router.get("/GroupByCategory/:title/:id", function (req, res, next) {
       if (err) throw err;
       blogModel.findCategories(function (err, categories) {
         if (err) throw err;
-        res.render("MyBlog", {
+        res.render("Myblog", {
           blogs: blog,
           category: catTitle,
           categories: categories,
