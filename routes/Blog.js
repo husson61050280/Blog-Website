@@ -9,22 +9,22 @@ var { check, validationResult } = require("express-validator");
 //SetDate
 var moment = require("moment");
 
-//Upload File or Image
-var multer = require("multer");
+// //Upload File or Image
+// var multer = require("multer");
 
-//ตั้งค่าการบันทึกรูปลงใน ฐานข้อมูล โดยชื่อรูป ตั้งจากเวลาที่ทำการ upload
-var storage = multer.diskStorage({
-  destination: function (req, file, callback) {
-    callback(null, "./public/images/");
-  },
-  filename: function (req, file, callback) {
-    callback(null, Date.now() + ".jpg");
-  },
-});
+// //ตั้งค่าการบันทึกรูปลงใน ฐานข้อมูล โดยชื่อรูป ตั้งจากเวลาที่ทำการ upload
+// var storage = multer.diskStorage({
+//   destination: function (req, file, callback) {
+//     callback(null, "./public/images/");
+//   },
+//   filename: function (req, file, callback) {
+//     callback(null, Date.now() + ".jpg");
+//   },
+// });
 
-var upload = multer({
-  storage: storage,
-});
+// var upload = multer({
+//   storage: storage,
+// });
 
 //เช็ค login
 function enSureAuthenticated(req, res, next) {
@@ -69,7 +69,6 @@ router.post(
     check("img", "Please Fill in Image").not().isEmpty(),
     check("author", "Please Fill in Author_Name").not().isEmpty(),
   ],
-  upload.single("img"),
   function (req, res, next) {
     var result = validationResult(req);
     var errors = result.errors;
@@ -82,17 +81,11 @@ router.post(
         });
       });
     }
-    //อัปโหลดรูปภาพ
-    if (req.file) {
-      var projectImage = req.file.filename;
-    } else {
-      var projectImage = "No Image";
-    }
     //บันทึกข้อมูล
     blogdata = [];
     (blogdata["title"] = req.body.title),
       (blogdata["content"] = req.body.content),
-      (blogdata["img"] = projectImage),
+      (blogdata["img"] = req.body.img),
       (blogdata["author"] = req.body.author),
       (blogdata["category"] = req.body.category),
       (blogdata["date"] = new Date()),
@@ -236,26 +229,28 @@ router.get("/Edit/:id", function (req, res, next) {
 //   }
 // });
 
+
 //EditBlog Update
 
 router.post("/Edit/:id", function (req, res, next) {
   id = req.params.id;
   users = req.user;
-
-  blogdata = [];
-  (blogdata["title"] = req.body.title),
-    (blogdata["content"] = req.body.content),
-    (blogdata["img"] = req.body.img),
-    (blogdata["author"] = req.body.author),
-    (blogdata["category"] = req.body.category),
-    (blogdata["date"] = new Date()),
-    (blogdata["Userid"] = req.body.Userid);
+  let blogdata = []
+  blogdata["title"] = req.body.title,
+  blogdata["content"] = req.body.content,
+  blogdata["img"] = req.body.img,
+  blogdata["author"] = req.body.author,
+  blogdata["category"] = req.body.category,
+  blogdata["date"] = new Date(),
+  blogdata["Userid"] = req.body.Userid;
+  console.log(blogdata);
   blogModel.UpdateBlog(blogdata, id, function (err, success) {
     if (err) throw err;
   });
   res.location("/Blog");
   res.redirect("/Blog");
 });
+
 
 //delete Blog
 router.get("/Delete/:id", function (req, res, next) {

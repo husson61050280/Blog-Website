@@ -1,6 +1,6 @@
 //import database connectDB
 var mongodb = require("mongodb");
-var db = require("monk")("mongodb://heroku_m18k90bt:mb8nu695rnnfkvr9vmamratd6k@ds235243.mlab.com:35243/heroku_m18k90bt");
+var db = require("monk")("localhost:27017/BlogWeb");
 
 
 //Global Connect Database
@@ -92,6 +92,7 @@ module.exports.Categorytitle = function (title, callback) {
 
 //Update Editblog
 module.exports.UpdateBlog = function (blogdata, id, callback) {
+  console.log(blogdata);
   console.log(id);
     blogs.update(
       {
