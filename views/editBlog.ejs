@@ -29,7 +29,7 @@
         </ul>
         <% } %>
         <% blogs.forEach(function(blog){%>
-        <form class="form-group " action="/Blog/Edit/<%=blog._id%>" method="post" enctype="multipart/form-data">
+        <form class="form-group " action="/Blog/Edit/<%=blog._id%>" method="post" >
             <% if(locals.categories) { %>
             <div class="form-group">
                 <label for="">ประเภทบทความ</label>
