@@ -82,6 +82,9 @@ router.post(
       });
     }
     //บันทึกข้อมูล
+    console.log(req.body.title);
+    console.log(req.body.content);
+    console.log(req.body.img);
     blogdata = [];
     (blogdata["title"] = req.body.title),
       (blogdata["content"] = req.body.content),
