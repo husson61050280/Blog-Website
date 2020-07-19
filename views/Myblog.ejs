@@ -3,6 +3,9 @@
 
 <head>
   <title>Blogs</title>
+  <!-- //animate -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.0/animate.compat.css">
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
 </head>
 
@@ -22,11 +25,11 @@
   </header>
 
   <!-- content zone -->
-  <div class="container" id="content">
+  <div class="container" >
     <div class="row">
 
       <!-- category -->
-      <div class="col-lg-2">
+      <div class="col-lg-2 mt-2" id="content1">
         <h5>Category</h5>
         <div class="list-group">
           <% users.forEach(function(user){ %>
@@ -51,10 +54,10 @@
       </style>
 
       <!-- card -->
-      <div class="col-lg-10">
+      <div class="col-lg-10" id="content2">
         <div class="row">
           <% blogs.forEach(function(blog) { %>
-          <div class="col-lg-4" id="blog">
+          <div class="col-lg-4" id="blog" data-aos="fade-up">
             <div class="card" style="width: 18rem;">
               <img src="<%=blog.img%>" class="card-img-top" alt="..." width="300px;" height="140px;">
               <div class="card-body">
@@ -185,6 +188,19 @@
     console.log(parallaxImage, parallaxContent);
 
   });
+
+
+  //animate
+  const element1 = document.querySelector('#content1')
+  const element2 = document.querySelector('#content2')
+  element1.classList.add('animated', 'fadeInLeft')
+  element2.classList.add('animated', 'animate__delay-2s', 'fadeInUp')
+
+</script>
+
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+  AOS.init();
 </script>
 
 

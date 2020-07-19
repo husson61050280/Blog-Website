@@ -4,6 +4,9 @@
 <head>
     <title>Blogs</title>
 
+    <!-- //animate -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.0/animate.compat.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
 
 
@@ -29,13 +32,13 @@
     </header>
 
     <!-- content zone -->
-    <div class="container" id="content">
+    <div class="container" id="content" >
         <div class="row">
             <!-- card -->
             <% blogs.forEach(function(blog) { %>
-            <div class=".col-6 .col-md-4  " id="blog">
+            <div class=".col-6 .col-md-4  " id="blog" data-aos="fade-left">
                 <div class="card" style="width: 20rem;">
-                    <img src="<%=blog.img%>" class="card-img-top" alt="..." width="300px;" height="140px;">
+                    <a href= "/Blog/detail/<%=blog._id%>" ><img src="<%=blog.img%>" class="card-img-top" alt="..." width="300px;" height="140px;"></a>
                     <div class="card-body">
                         <h5 class="card-title"><%=blog.title%></h5>
                         <p class="card-text"><%- descriptionText(blog.content,250)%></p>
@@ -47,7 +50,7 @@
                         <!-- ทำลิงค์ให้เลือกหมวดหมู่ได้ -->
                         <a href="/Blog/GroupByCategory/<%=blog.category%>"><%= blog.category %></a>
                     </div>
-                    <a href="/Blog/detail/<%=blog._id%>" class="btn btn-primary">View</a>
+                    <a href="/Blog/detail/<%=blog._id%>" class="btn btn-outline-dark">Read more</a>
                     <!-- card -->
                 </div>
             </div>
@@ -134,20 +137,31 @@
     let parallaxImage = document.getElementById('ParallaxImage');
     let parallaxContent = document.getElementById('ParallaxContent');
     let windowScrolled;
-  
+
     window.addEventListener('scroll', function windowScroll() {
-      //ค่าการ Scroll
-      windowScrolled = window.pageYOffset || this.document.documentElement.scrollTop;
-      //แก้ไขค่า speed
-      console.log(windowScrolled);
-  
-      parallaxImage.style.transform = `translate3d(0,${windowScrolled / 3}px ,0)`;
-      parallaxContent.style.transform = `translate3d(0,${windowScrolled / 6}px ,0)`;
-      console.log(parallaxImage, parallaxContent);
-  
+        //ค่าการ Scroll
+        windowScrolled = window.pageYOffset || this.document.documentElement.scrollTop;
+        //แก้ไขค่า speed
+        console.log(windowScrolled);
+
+        parallaxImage.style.transform = `translate3d(0,${windowScrolled / 3}px ,0)`;
+        parallaxContent.style.transform = `translate3d(0,${windowScrolled / 6}px ,0)`;
+        console.log(parallaxImage, parallaxContent);
+
     });
-  </script>
-  
+
+    //animate
+    const element = document.querySelector('#content')
+    element.classList.add('animated', 'animate__delay-2s' ,'bounceInLeft')
+
+</script>
+
+
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+  AOS.init();
+</script>
+
 
 
 

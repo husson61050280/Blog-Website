@@ -49,6 +49,10 @@ router.get("/", function (req, res, next) {
   });
 });
 
+
+
+
+
 //หน้าเขียนบทความ
 router.get("/addBlog", function (req, res, next) {
   blogModel.findCategories(function (err, categories) {
