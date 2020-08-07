@@ -2,7 +2,8 @@ var express = require("express");
 var router = express.Router();
 
 //model
-var UserModel = require("../model/UserModel");
+var UserModel = require('../model/UserModel')
+var User = new UserModel();
 
 //login
 var passport = require("passport");
@@ -64,7 +65,7 @@ router.post("/Register", function (req, res, next) {
       password2,
     });
   } else {
-    UserModel.CheckEmail(email, function (err, success) {
+    User.CheckEmail(email, function (err, success) {
       console.log("User", success);
       if (success) {
         errors.push({ msg: "Email already exists" });
@@ -86,7 +87,7 @@ router.post("/Register", function (req, res, next) {
           (Userdata["lastname"] = req.body.lastname),
           (Userdata["email"] = req.body.email);
 
-        UserModel.AddUser(Userdata, function (err, user) {
+          User.AddUser(Userdata, function (err, user) {
           if (err) throw err;
         });
         res.redirect("/User/SignIn");
@@ -112,25 +113,26 @@ router.post(
   }
 );
 
+
 passport.serializeUser(function (user, done) {
   done(null, user._id);
 });
 
 passport.deserializeUser(function (id, done) {
-  UserModel.getUserById(id, function (err, user) {
+  User.getUserById(id, function (err, user) {
     done(err, user);
   });
 });
 
 passport.use(
   new LocalStrategy(function (username, password, done) {
-    UserModel.getUserByUserName(username, function (err, user) {
+    User.getUserByUserName(username, function (err, user) {
       if (err) throw err;
       console.log(user);
       if (!user) {
         return done(null, false);
       }
-      UserModel.comparePassword(password, user.password, function (
+      User.comparePassword(password, user.password, function (
         err,
         isMatch
       ) {
@@ -155,7 +157,7 @@ router.get("/Signout", function (req, res, next) {
 //ViewProfile
 router.get("/ViewProfile/:id", function (req, res, next) {
   id = req.params.id;
-  UserModel.getUserById(id, function (err, users) {
+  User.getUserById(id, function (err, users) {
     if (err) throw err;
     res.render("ViewProfile", { users: users, user: req.user });
   });
@@ -164,7 +166,7 @@ router.get("/ViewProfile/:id", function (req, res, next) {
 //editProfile
 router.get("/EditProfile/:id", function (req, res, next) {
   id = req.params.id;
-  UserModel.getUserById(id, function (err, users) {
+  User.getUserById(id, function (err, users) {
     if (err) throw err;
     res.render("editProfile", { users: users, user: req.user });
   });
@@ -178,7 +180,7 @@ router.post("/UpdateProfile/:id", function (req, res, next) {
     (Userdata["firstname"] = req.body.first_name),
     (Userdata["lastname"] = req.body.last_name);
 
-  UserModel.UpdateProfile(id, Userdata, function (err, success) {
+    User.UpdateProfile(id, Userdata, function (err, success) {
     if (err) throw err;
   });
   res.location("/Blog");

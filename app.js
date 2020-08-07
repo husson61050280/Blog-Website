@@ -10,6 +10,7 @@ var indexRouter = require('./routes/index');
 var BlogRouter = require('./routes/Blog');
 var UserRouter = require('./routes/User');
 
+
 //Upload File or Image
 var multer = require('multer');
 var upload = multer({dest :'./public/images'});
@@ -69,7 +70,8 @@ var db = require('monk')('mongodb://heroku_9k21qtdq:m28uq165q6oas1j9gktrsfh0f8@d
 //ใช้งาน Router
 app.use('/', indexRouter);
 app.use('/Blog', BlogRouter);
-app.use('/User',UserRouter)
+app.use('/User',UserRouter);
+
 
 
 // catch 404 and forward to error handler
