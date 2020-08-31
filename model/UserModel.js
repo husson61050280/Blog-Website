@@ -1,7 +1,7 @@
 //import database connectDB
 var mongodb = require("mongodb");
-// var db = require("monk")("mongodb://heroku_m18k90bt:mb8nu695rnnfkvr9vmamratd6k@ds235243.mlab.com:35243/heroku_m18k90bt");
-var db = require("monk")("localhost:27017/BlogWeb");
+var db = require("monk")("mongodb://heroku_m18k90bt:mb8nu695rnnfkvr9vmamratd6k@ds235243.mlab.com:35243/heroku_m18k90bt");
+// var db = require("monk")("localhost:27017/BlogWeb");
 
 //เข้ารหัส
 var bcrypt = require("bcryptjs");
@@ -87,6 +87,14 @@ class UserModel {
   comparePassword(password, hash, callback) {
     bcrypt.compare(password, hash, function (err, isMatch) {
       callback(null, isMatch);
+    });
+  }
+
+  //เช็ค username ซ้ำไหม
+  CheckUsername(username, callback) {
+    User.findOne({ username: username }, {}, function (err, result) {
+      if (err) throw err;
+      callback(null, result);
     });
   }
 

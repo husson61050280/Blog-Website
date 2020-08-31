@@ -95,6 +95,7 @@ router.post(
     let category = req.body.category;
     let date = new Date();
     let Userid = req.body.Userid;
+    let views = 0;
 
     var Blog = new BlogModel(
       title,
@@ -103,7 +104,8 @@ router.post(
       author,
       category,
       date,
-      Userid
+      Userid,
+      views
     );
 
     Blog.AddBlog(function (err, success) {

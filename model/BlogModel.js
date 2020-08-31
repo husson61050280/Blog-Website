@@ -1,7 +1,7 @@
 //import database connectDB
 var mongodb = require("mongodb");
-// var db = require("monk")("mongodb://heroku_m18k90bt:mb8nu695rnnfkvr9vmamratd6k@ds235243.mlab.com:35243/heroku_m18k90bt");
-var db = require("monk")("localhost:27017/BlogWeb")
+var db = require("monk")("mongodb://heroku_m18k90bt:mb8nu695rnnfkvr9vmamratd6k@ds235243.mlab.com:35243/heroku_m18k90bt");
+// var db = require("monk")("localhost:27017/BlogWeb")
 
 //Global Connect Database
 var blogs = db.get("Blogs");
@@ -10,7 +10,7 @@ var blogs = db.get("Blogs");
 var moment = require("moment");
 
 class BlogModel {
-  constructor(title, content, img, author, category, date, Userid) {
+  constructor(title, content, img, author, category, date, Userid,views) {
     this.title = title;
     this.content = content;
     this.img = img;
@@ -18,6 +18,7 @@ class BlogModel {
     this.category = category;
     this.date = date;
     this.Userid = Userid;
+    this.views = views;
   }
 
   //ดึงข้อมูล Blogs
@@ -45,7 +46,7 @@ class BlogModel {
     let category = this.category;
     let date = this.date;
     let Userid = this.Userid;
-
+    let views = this.views;
     blogs.insert({
       title: title,
       content: content,
@@ -54,6 +55,7 @@ class BlogModel {
       category: category,
       date: date,
       Userid: Userid,
+      views: this.views,
     }),
       function (err, success) {
         if (err) throw err;
