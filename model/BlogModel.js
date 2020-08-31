@@ -1,16 +1,24 @@
 //import database connectDB
 var mongodb = require("mongodb");
-var db = require("monk")("mongodb://heroku_m18k90bt:mb8nu695rnnfkvr9vmamratd6k@ds235243.mlab.com:35243/heroku_m18k90bt");
+// var db = require("monk")("mongodb://heroku_m18k90bt:mb8nu695rnnfkvr9vmamratd6k@ds235243.mlab.com:35243/heroku_m18k90bt");
+var db = require("monk")("localhost:27017/BlogWeb")
 
 //Global Connect Database
 var blogs = db.get("Blogs");
-var categories = db.get("categories");
 
 //SetDate
 var moment = require("moment");
 
 class BlogModel {
-  constructor() {}
+  constructor(title, content, img, author, category, date, Userid) {
+    this.title = title;
+    this.content = content;
+    this.img = img;
+    this.author = author;
+    this.category = category;
+    this.date = date;
+    this.Userid = Userid;
+  }
 
   //ดึงข้อมูล Blogs
   findblog(callback) {
@@ -28,25 +36,24 @@ class BlogModel {
     });
   }
 
-  //ดึงข้อมูล Category
-  findCategories(callback) {
-    categories.find({}, {}, function (err, result) {
-      if (err) throw err;
-      callback(null, result);
-    });
-  }
-
   //Add blog
-  AddBlog(Blogdata, callback) {
-    console.log(Blogdata);
+  AddBlog(callback) {
+    let title = this.title;
+    let content = this.content;
+    let img = this.img;
+    let author = this.author;
+    let category = this.category;
+    let date = this.date;
+    let Userid = this.Userid;
+
     blogs.insert({
-      title: blogdata["title"],
-      content: blogdata["content"],
-      img: blogdata["img"],
-      author: blogdata["author"],
-      category: blogdata["category"],
-      date: blogdata["date"],
-      Userid: blogdata["Userid"],
+      title: title,
+      content: content,
+      img: img,
+      author: author,
+      category: category,
+      date: date,
+      Userid: Userid,
     }),
       function (err, success) {
         if (err) throw err;
@@ -83,30 +90,25 @@ class BlogModel {
     });
   }
 
-  //findByCategorytitle
-  Categorytitle(title, callback) {
-    console.log(title);
-    categories.find({ title: title }, {}, function (err, result) {
-      if (err) throw err;
-      callback(null, result);
-    });
-  }
-
   //Update Editblog
-  UpdateBlog(blogdata, id, callback) {
-    console.log(blogdata);
+  UpdateBlog(id, callback) {
     console.log(id);
+    let title = this.title;
+    let content = this.content;
+    let img = this.img;
+    let author = this.author;
+    let category = this.category;
     blogs.update(
       {
         _id: id,
       },
       {
         $set: {
-          title: blogdata["title"],
-          content: blogdata["content"],
-          img: blogdata["img"],
-          author: blogdata["author"],
-          category: blogdata["category"],
+          title: title,
+          content: content,
+          img: img,
+          author: author,
+          category: category,
         },
       },
       function (err, success) {
@@ -135,6 +137,35 @@ class BlogModel {
       callback(null, blog);
     });
   }
+
+
+  CountView(id, callback) {
+    blogs.find ({ _id: id }, {}, function (err, result) {
+      if (err) throw err;
+      let views = result[0].views
+  
+    console.log(id);
+    blogs.update(
+      {
+        _id: id,
+      },
+      {
+        $set: {
+          views : views+1
+        },
+      },
+      function (err, success) {
+        if (err) {
+          res.send(err);
+        } else {
+          callback(null, success);
+        }
+      }
+    );
+    })
+  }
+
+
 } //class
 
 module.exports = BlogModel;

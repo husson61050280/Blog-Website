@@ -1,18 +1,19 @@
 var express = require("express");
 var router = express.Router();
 
-
 // import blog
-var BlogModel  = require('../model/BlogModel');
+var BlogModel = require("../model/BlogModel");
 var Blog = new BlogModel();
+
+//import Category 
+var Category = require("../model/CategoryModel");
+var Categories = new Category();
 
 //check Validator
 var { check, validationResult } = require("express-validator");
 
 //SetDate
 var moment = require("moment");
-
-
 
 // //Upload File or Image
 // var multer = require("multer");
@@ -31,7 +32,6 @@ var moment = require("moment");
 //   storage: storage,
 // });
 
-
 //เช็ค login
 function enSureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
@@ -44,7 +44,7 @@ function enSureAuthenticated(req, res, next) {
 router.get("/", function (req, res, next) {
   Blog.findblog(function (err, blog) {
     if (err) throw err;
-    Blog.findCategories(function (err, categories) {
+    Categories.findCategories(function (err, categories) {
       if (err) throw err;
       res.render("Blog", {
         blogs: blog,
@@ -57,7 +57,7 @@ router.get("/", function (req, res, next) {
 
 //หน้าเขียนบทความ
 router.get("/addBlog", function (req, res, next) {
-  Blog.findCategories(function (err, categories) {
+  Categories.findCategories(function (err, categories) {
     if (err) throw err;
     res.render("addBlog", {
       categories: categories,
@@ -80,7 +80,7 @@ router.post(
     var errors = result.errors;
 
     if (!result.isEmpty()) {
-      Blog.findCategories(function (err, categories) {
+      Categories.findCategories(function (err, categories) {
         res.render("addBlog", {
           categories: categories,
           errors: errors,
@@ -88,20 +88,25 @@ router.post(
       });
     }
     //บันทึกข้อมูล
-    console.log(req.body.title);
-    console.log(req.body.content);
-    console.log(req.body.img);
-    blogdata = [];
-    (blogdata["title"] = req.body.title),
-      (blogdata["content"] = req.body.content),
-      (blogdata["img"] = req.body.img),
-      (blogdata["author"] = req.body.author),
-      (blogdata["category"] = req.body.category),
-      (blogdata["date"] = new Date()),
-      (blogdata["Userid"] = req.body.Userid);
-    console.log(blogdata);
+    let title = req.body.title;
+    let content = req.body.content;
+    let img = req.body.img;
+    let author = req.body.author;
+    let category = req.body.category;
+    let date = new Date();
+    let Userid = req.body.Userid;
 
-    Blog.AddBlog(blogdata, function (err, success) {
+    var Blog = new BlogModel(
+      title,
+      content,
+      img,
+      author,
+      category,
+      date,
+      Userid
+    );
+
+    Blog.AddBlog(function (err, success) {
       if (err) throw err;
     });
     res.redirect("/Blog");
@@ -110,10 +115,10 @@ router.post(
 
 //myBlog
 router.get("/Myblog/:id", function (req, res, next) {
-  id = req.params.id;
+  let id = req.params.id;
   Blog.findMyBlog(id, function (err, blog) {
     if (err) throw err;
-    Blog.findCategories(function (err, categories) {
+    Categories.findCategories(function (err, categories) {
       if (err) throw err;
       res.render("Myblog", {
         blogs: blog,
@@ -126,12 +131,12 @@ router.get("/Myblog/:id", function (req, res, next) {
 
 //GroupByCategory
 router.get("/GroupByCategory/:title", function (req, res, next) {
-  title = req.params.title;
+  let title = req.params.title;
   Blog.GroupByCategories(title, function (err, blog) {
     if (err) throw err;
-    Blog.Categorytitle(title, function (err, catTitle) {
+    Categories.Categorytitle(title, function (err, catTitle) {
       if (err) throw err;
-      Blog.findCategories(function (err, categories) {
+      Categories.findCategories(function (err, categories) {
         if (err) throw err;
         res.render("BlogByCat", {
           blogs: blog,
@@ -146,13 +151,13 @@ router.get("/GroupByCategory/:title", function (req, res, next) {
 
 //GroupByCategory By User
 router.get("/GroupByCategory/:title/:id", function (req, res, next) {
-  userid = req.params.id;
-  title = req.params.title;
+  let userid = req.params.id;
+  let title = req.params.title;
   Blog.GroupByCategoriesByUser(title, userid, function (err, blog) {
     if (err) throw err;
-    Blog.Categorytitle(title, function (err, catTitle) {
+    Categories.Categorytitle(title, function (err, catTitle) {
       if (err) throw err;
-      Blog.findCategories(function (err, categories) {
+      Categories.findCategories(function (err, categories) {
         if (err) throw err;
         res.render("Myblog", {
           blogs: blog,
@@ -168,23 +173,25 @@ router.get("/GroupByCategory/:title/:id", function (req, res, next) {
 
 //BlogDetail
 router.get("/detail/:id", function (req, res, next) {
-  id = req.params.id;
-  id2 = req.params.id2;
+  let id = req.params.id;
   Blog.findblogbyId(id, function (err, blog) {
     if (err) throw err;
-    Blog.findCategories(function (err, categories) {
+    Categories.findCategories(function (err, categories) {
       if (err) throw err;
-    res.render("BlogDetail", { blogs: blog, categories: categories });
+      Blog.CountView(id, function(err,success){
+        if (err) throw err;
+        res.render("BlogDetail", { blogs: blog, categories: categories });
+      })  
     });
   });
 });
 
 //EditBlog Page
 router.get("/Edit/:id", function (req, res, next) {
-  id = req.params.id;
+  let id = req.params.id;
   Blog.findblogbyId(id, function (err, blog) {
     if (err) throw err;
-    Blog.findCategories(function (err, categories) {
+    Categories.findCategories(function (err, categories) {
       if (err) throw err;
       res.render("editBlog", {
         blogs: blog,
@@ -194,6 +201,7 @@ router.get("/Edit/:id", function (req, res, next) {
     });
   });
 });
+
 
 // //EditBlog Update กรณีอัปโหลดรูป
 
@@ -242,18 +250,18 @@ router.get("/Edit/:id", function (req, res, next) {
 //EditBlog Update
 
 router.post("/Edit/:id", function (req, res, next) {
-  id = req.params.id;
-  users = req.user;
-  let blogdata = [];
-  (blogdata["title"] = req.body.title),
-    (blogdata["content"] = req.body.content),
-    (blogdata["img"] = req.body.img),
-    (blogdata["author"] = req.body.author),
-    (blogdata["category"] = req.body.category),
-    (blogdata["date"] = new Date()),
-    (blogdata["Userid"] = req.body.Userid);
-  console.log(blogdata);
-  Blog.UpdateBlog(blogdata, id, function (err, success) {
+  let id = req.params.id;
+  let users = req.user;
+  //edit data
+  let title = req.body.title;
+  let content = req.body.content;
+  let img = req.body.img;
+  let author = req.body.author;
+  let category = req.body.category;
+
+  var Blog = new BlogModel(title, content, img, author, category);
+
+  Blog.UpdateBlog(id, function (err, success) {
     if (err) throw err;
   });
   res.location("/Blog");
@@ -262,7 +270,7 @@ router.post("/Edit/:id", function (req, res, next) {
 
 //delete Blog
 router.get("/Delete/:id", function (req, res, next) {
-  id = req.params.id;
+  let id = req.params.id;
   Blog.DeleteBlog(id, function (err, success) {
     if (err) throw err;
   });
@@ -270,8 +278,4 @@ router.get("/Delete/:id", function (req, res, next) {
   res.redirect("/Blog");
 });
 
-
-
-
 module.exports = router;
-

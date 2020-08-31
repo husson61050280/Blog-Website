@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 
 //model
-var UserModel = require('../model/UserModel')
+var UserModel = require("../model/UserModel");
 var User = new UserModel();
 
 //login
@@ -12,10 +12,11 @@ var LocalStrategy = require("passport-local").Strategy;
 //validator
 const { check, validationResult } = require("express-validator");
 
-/* GET home page. */
-router.get("/", function (req, res, next) {
-  res.render("ฺBlog");
-});
+//randomstring
+const randomstring = require("randomstring");
+
+//mailer 
+const mailer = require('./Mailer');
 
 //login page
 router.get("/SignIn", function (req, res, next) {
@@ -80,21 +81,47 @@ router.post("/Register", function (req, res, next) {
         });
       } else {
         //complete insert to database
-        Userdata = [];
-        (Userdata["username"] = req.body.username),
-          (Userdata["password"] = req.body.password),
-          (Userdata["firstname"] = req.body.firstname),
-          (Userdata["lastname"] = req.body.lastname),
-          (Userdata["email"] = req.body.email);
+        let username = req.body.username;
+        let password = req.body.password;
+        let firstname = req.body.firstname;
+        let lastname = req.body.lastname;
+        let email = req.body.email;
+        //randomstring
+        let secret_token = randomstring.generate();
+        //status of Verifly
+        let active = false;
 
-          User.AddUser(Userdata, function (err, user) {
+        var User = new UserModel(
+          username,
+          password,
+          firstname,
+          lastname,
+          email,
+          secret_token,
+          active
+        );
+        User.AddUser(function (err, user) {
           if (err) throw err;
         });
+
+        //compose an email 
+        const html = `Hi there, <br/> 
+        Thank you for registing! 
+        <br/> <br/> 
+        Please verify your email by typing the following Token <br/> 
+        Token : <b>${secret_token}</b>
+        <br/> 
+        Thank you sir!`
+        
+        mailer.sendEmail('admin@BlogKmitl.com', email , "Please Verify you email!" , html);
+   
         res.redirect("/User/SignIn");
       }
     });
   }
 });
+
+//forgot password
 
 //เช็ค Login
 
@@ -104,15 +131,19 @@ router.post(
     //login ไม่สำเร็จ
     failureRedirect: "/User/SignIn",
     failureFlash: true,
-
   }),
 
   // login สมบูรณ์
   function (req, res) {
-    res.redirect("/Blog");
+      let users = req.user;
+       //check verifly
+       if (!users.active) {
+        res.render("Verifly", { users: users });
+      } else {
+        res.redirect("/Blog");
+      }
   }
 );
-
 
 passport.serializeUser(function (user, done) {
   done(null, user._id);
@@ -132,10 +163,7 @@ passport.use(
       if (!user) {
         return done(null, false);
       }
-      User.comparePassword(password, user.password, function (
-        err,
-        isMatch
-      ) {
+      User.comparePassword(password, user.password, function (err, isMatch) {
         if (err) throw err;
         console.log(isMatch);
         if (isMatch) {
@@ -156,7 +184,7 @@ router.get("/Signout", function (req, res, next) {
 
 //ViewProfile
 router.get("/ViewProfile/:id", function (req, res, next) {
-  id = req.params.id;
+  let id = req.params.id;
   User.getUserById(id, function (err, users) {
     if (err) throw err;
     res.render("ViewProfile", { users: users, user: req.user });
@@ -165,7 +193,7 @@ router.get("/ViewProfile/:id", function (req, res, next) {
 
 //editProfile
 router.get("/EditProfile/:id", function (req, res, next) {
-  id = req.params.id;
+  let id = req.params.id;
   User.getUserById(id, function (err, users) {
     if (err) throw err;
     res.render("editProfile", { users: users, user: req.user });
@@ -174,17 +202,101 @@ router.get("/EditProfile/:id", function (req, res, next) {
 
 //Update Profile
 router.post("/UpdateProfile/:id", function (req, res, next) {
-  id = req.params.id;
-  Userdata = [];
-  (Userdata["username"] = req.body.username),
-    (Userdata["firstname"] = req.body.first_name),
-    (Userdata["lastname"] = req.body.last_name);
+  let id = req.params.id;
+  let firstname = req.body.first_name;
+  let lastname = req.body.last_name;
 
-    User.UpdateProfile(id, Userdata, function (err, success) {
+  var User = new UserModel("", " ", firstname, lastname );
+  User.UpdateProfile(id, function (err, success) {
     if (err) throw err;
   });
   res.location("/Blog");
   res.redirect("/Blog");
 });
+
+
+
+//Verifly
+router.post("/Verifly", function (req, res, next) {
+    let secret_token = req.body.secret_token;
+    let user_secret_token = req.body.user_secret_token;
+    let userId = req.body.userid;
+    console.log(user_secret_token);
+    console.log(secret_token);
+
+  //CheckSecretKey
+    if(user_secret_token == secret_token){
+      User.SetActive(userId, function (err, success) {
+        if (err) throw err;
+        res.redirect("/Blog");
+      });
+    }
+    else {
+      res.redirect("/User/SignIn")
+    }
+});
+
+
+
+//forgot Password 
+router.get("/forgotPassword" , function(req,res ,next) {
+  res.render("forgotPassword.ejs");
+});
+
+//forgot Password 
+router.post("/forgotPassword", function (req, res, next) {
+  let email = req.body.email;
+  User.CheckEmail(email, function (err, success) {
+    console.log("User", success);
+    if (success) {
+        
+      User.getUserByEmail(email , function(err,result){
+        let secret_token = result[0].secret_token;
+        console.log("GetUSer by email = " ,result);
+        //compose an email 
+        const html = `Hi there, <br/> 
+        Email : ${email} 
+        <br/> <br/> 
+        Please copy verify code and enter to website<br/> 
+        Token : <b>${secret_token}</b>
+        Thank you sir!`
+
+        mailer.sendEmail('admin@BlogKmitl.com', email , "Forgot password!" , html);   
+        res.redirect('/User/NewPassword');
+      });
+    }
+
+});
+
+});
+
+//User NewPassword
+router.get("/NewPassword" , function(req,res ,next) {
+  res.render("newPassword.ejs");
+});
+
+
+//User NewPassword
+router.post("/NewPassword" , function(req,res ,next) {
+  let email = req.body.email;
+  let key = req.body.key;
+  let password = req.body.password;
+
+  User.getUserByEmail(email , function(err,result){
+    let secret_token = result[0].secret_token;
+    let id = result[0]._id;
+    if(key == secret_token){
+        User.UpdatePassword(id , password, function(err,result){
+          if (err) throw err;  
+        }); 
+        res.redirect('/User/SignIn');
+    }
+    else {
+      console.log("Error");
+    }
+  }); 
+});
+
+
 
 module.exports = router;

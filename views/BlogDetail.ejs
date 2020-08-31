@@ -5,6 +5,9 @@
     <title>Blogs</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.0/animate.compat.css">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+        integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
 </head>
 
 
@@ -13,48 +16,54 @@
     <% include Layout %>
     <% blogs.forEach(function(blog) {%>
 
-   
 
-        <div class="Category" id ="animate1">
-            <a href="/Blog/GroupByCategory/<%=blog.category%>"><button type="button"
-                    class="btn btn-outline-dark"><%= blog.category%></button></a>
+
+    <div class="Category" id="animate1">
+        <a href="/Blog/GroupByCategory/<%=blog.category%>"><button type="button"
+                class="btn btn-outline-dark"><%= blog.category%></button></a>
+
+    </div>
+
+    <div class="views container">
+        <h6><i class="far fa-eye"></i> <%=blog.views%></h6>
+
+    </div>
+
+    <div class="head" id="animate2">
+        <br>
+        <h2><%= blog.title%></h2>
+        <br>
+    </div>
+
+    <div class="image" id="animate3">
+        <img src="<%=blog.img%>" alt="">
+    </div>
+
+    <div class="content mt-5">
+        <div class="container" id="animate4">
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-10"><%-blog.content%></div>
+                <div class="col-sm-1"></div>
+            </div>
         </div>
+    </div>
 
-        <div class="head" id ="animate2">
-            <br>
-            <h2><%= blog.title%></h2>
-            <br>
-        </div>
-
-        <div class="image" id ="animate3" >
-            <img src="<%=blog.img%>" alt="">
-        </div>
-
-        <div class="content mt-5">
-            <div class="container" id ="animate4">
-                <div class="row">
-                    <div class="col-sm-1"></div>
-                    <div class="col-sm-10"><%-blog.content%></div>
-                    <div class="col-sm-1"></div>
+    <div class="footer">
+        <div class="container" id="animate5">
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-10">
+                    <h5>Author : <%= blog.author%></h5>
                 </div>
+                <div class="col-sm-1"> </div>
             </div>
         </div>
 
-        <div class="footer">
-            <div class="container" id ="animate5">
-                <div class="row">
-                    <div class="col-sm-1"></div>
-                    <div class="col-sm-10">
-                        <h5>Author : <%= blog.author%></h5>
-                    </div>
-                    <div class="col-sm-1"> </div>
-                </div>
-            </div>
+    </div>
 
-        </div>
 
-         
-        <% }) %>
+    <% }) %>
 
 
 </body>
@@ -92,21 +101,30 @@
         margin: 30px 30px;
         text-align: right;
     }
+    .views {
+        padding: 10px;
+
+    }
+
+    .views > h6 {
+        text-align: right;
+    }
+
 </style>
 
 <script>
     const element1 = document.querySelector('#animate1')
-    const element2= document.querySelector('#animate2')
-    const element3= document.querySelector('#animate3')
-    const element4= document.querySelector('#animate4')
-    const element5= document.querySelector('#animate5')
+    const element2 = document.querySelector('#animate2')
+    const element3 = document.querySelector('#animate3')
+    const element4 = document.querySelector('#animate4')
+    const element5 = document.querySelector('#animate5')
 
     element1.classList.add('animated', 'fadeInLeft')
     element2.classList.add('animated', 'fadeInUp')
-    element3.classList.add('animated', 'animate__delay-2s','zoomIn')
-    element4.classList.add('animated', 'animate__delay-3s','slideInUp')
-    element5.classList.add('animated', 'animate__delay-4s','fadeIn')
-    
+    element3.classList.add('animated', 'animate__delay-2s', 'zoomIn')
+    element4.classList.add('animated', 'animate__delay-3s', 'slideInUp')
+    element5.classList.add('animated', 'animate__delay-4s', 'fadeIn')
+
 </script>
 
 
