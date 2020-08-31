@@ -296,7 +296,7 @@ router.get("/NewPassword", function (req, res, next) {
 router.post("/NewPassword", function (req, res, next) {
   let email = req.body.email;
   let key = req.body.key;
-  key.trim()
+  key = key.trim()
   let password = req.body.password;
 
   User.getUserByEmail(email, function (err, result) {
