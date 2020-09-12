@@ -15,8 +15,17 @@ const { check, validationResult } = require("express-validator");
 //randomstring
 const randomstring = require("randomstring");
 
-//mailer
-const mailer = require("./Mailer");
+
+//nodemailer
+const nodemailer = require("nodemailer");
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "BlogSE.Project@gmail.com", // your email
+    pass: "61050280", // your email password
+  },
+});
+
 
 //login page
 router.get("/SignIn", function (req, res, next) {
@@ -118,21 +127,29 @@ router.post("/Register", function (req, res, next) {
             if (err) throw err;
           });
 
-          //compose an email
           const html = `Hi there, <br/> 
-        Thank you for registing! 
-        <br/> <br/> 
-        Please verify your email by typing the following Token <br/> 
-        Token : <b>${secret_token}</b>
-        <br/> 
-        Thank you sir!`;
+          Thank you for registing! 
+          <br/> <br/> 
+          Please verify your email by typing the following Token <br/> 
+          Token : <b>${secret_token}</b>
+          <br/> 
+          Thank you sir!`;
 
-          mailer.sendEmail(
-            "admin@BlogKmitl.com",
-            email,
-            "Please Verify you email!",
-            html
-          );
+          // setup email data with unicode symbols
+          const mailOptions = {
+            from: "BlogSE.Project@gmail.com", // sender
+            to: email, // list of receivers
+            subject: "Verify Email BlogSE",
+            html: html, // HTML body
+          };
+
+          // send mail with defined transport object
+          transporter.sendMail(mailOptions, function (err, info) {
+            if (err) console.log(err);
+            else console.log(info);
+          });
+
+
 
           res.redirect("/User/SignIn");
         }
@@ -267,6 +284,7 @@ router.post("/forgotPassword", function (req, res, next) {
       User.getUserByEmail(email, function (err, result) {
         let secret_token = result[0].secret_token;
         console.log("GetUSer by email = ", result);
+
         //compose an email
         const html = `Hi there, <br/> 
         Email : ${email} 
@@ -275,12 +293,21 @@ router.post("/forgotPassword", function (req, res, next) {
         Token : <b>${secret_token}</b>
         Thank you sir!`;
 
-        mailer.sendEmail(
-          "admin@BlogKmitl.com",
-          email,
-          "Forgot password!",
-          html
-        );
+         // setup email data with unicode symbols
+         const mailOptions = {
+          from: "BlogSE.Project@gmail.com", // sender
+          to: email, // list of receivers
+          subject: "Forgot Password BlogSE",
+          html: html, // HTML body
+        };
+
+        // send mail with defined transport object
+        transporter.sendMail(mailOptions, function (err, info) {
+          if (err) console.log(err);
+          else console.log(info);
+        });
+
+
         res.redirect("/User/NewPassword");
       });
     }
@@ -296,7 +323,7 @@ router.get("/NewPassword", function (req, res, next) {
 router.post("/NewPassword", function (req, res, next) {
   let email = req.body.email;
   let key = req.body.key;
-  key = key.trim()
+  key = key.trim();
   let password = req.body.password;
 
   User.getUserByEmail(email, function (err, result) {
