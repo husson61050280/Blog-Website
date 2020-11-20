@@ -1,6 +1,10 @@
 var express = require("express");
 var router = express.Router();
 
+// import Controller
+var UserController = require("../controller/UserController");
+var UserCon = new UserController();
+
 //model
 var UserModel = require("../model/UserModel");
 var User = new UserModel();
@@ -9,159 +13,16 @@ var User = new UserModel();
 var passport = require("passport");
 var LocalStrategy = require("passport-local").Strategy;
 
-//validator
-const { check, validationResult } = require("express-validator");
-
-//randomstring
-const randomstring = require("randomstring");
-
-
-//nodemailer
-const nodemailer = require("nodemailer");
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "BlogSE.Project@gmail.com", // your email
-    pass: "61050280", // your email password
-  },
-});
-
-
 //login page
-router.get("/SignIn", function (req, res, next) {
-  res.render("Login");
-});
+router.get("/SignIn", UserCon.Login_Page);
 
 //signUp page
-router.get("/SignUp", function (req, res, next) {
-  res.render("Register");
-});
+router.get("/SignUp", UserCon.Signup_Page);
 
 //บันทึก User
-router.post("/Register", function (req, res, next) {
-  const {
-    firstname,
-    lastname,
-    email,
-    username,
-    password,
-    password2,
-  } = req.body;
-  let errors = [];
-
-  if (
-    !firstname ||
-    !lastname ||
-    !username ||
-    !email ||
-    !password ||
-    !password2
-  ) {
-    errors.push({ msg: "Please enter all fields" });
-  }
-
-  if (password != password2) {
-    errors.push({ msg: "Passwords do not match" });
-  }
-
-  if (errors.length > 0) {
-    res.render("Register", {
-      errors,
-      firstname,
-      lastname,
-      username,
-      email,
-      password,
-      password2,
-    });
-  } else {
-    User.CheckEmail(email, function (err, success) {
-      console.log("User", success);
-      if (success) {
-        errors.push({ msg: "Email already exists" });
-        res.render("Register", {
-          errors,
-          firstname,
-          lastname,
-          username,
-          email,
-          password,
-          password2,
-        });
-      }
-      User.CheckUsername(username, function (err, success) {
-        console.log("User", success);
-        if (success) {
-          errors.push({ msg: "Username already exists" });
-          res.render("Register", {
-            errors,
-            firstname,
-            lastname,
-            username,
-            email,
-            password,
-            password2,
-          });
-        } else {
-          //complete insert to database
-          let username = req.body.username;
-          let password = req.body.password;
-          let firstname = req.body.firstname;
-          let lastname = req.body.lastname;
-          let email = req.body.email;
-          //randomstring
-          let secret_token = randomstring.generate();
-          //status of Verifly
-          let active = false;
-
-          var User = new UserModel(
-            username,
-            password,
-            firstname,
-            lastname,
-            email,
-            secret_token,
-            active
-          );
-          User.AddUser(function (err, user) {
-            if (err) throw err;
-          });
-
-          const html = `Hi there, <br/> 
-          Thank you for registing! 
-          <br/> <br/> 
-          Please verify your email by typing the following Token <br/> 
-          Token : <b>${secret_token}</b>
-          <br/> 
-          Thank you sir!`;
-
-          // setup email data with unicode symbols
-          const mailOptions = {
-            from: "BlogSE.Project@gmail.com", // sender
-            to: email, // list of receivers
-            subject: "Verify Email BlogSE",
-            html: html, // HTML body
-          };
-
-          // send mail with defined transport object
-          transporter.sendMail(mailOptions, function (err, info) {
-            if (err) console.log(err);
-            else console.log(info);
-          });
-
-
-
-          res.redirect("/User/SignIn");
-        }
-      });
-    });
-  }
-});
-
-//forgot password
+router.post("/Register", UserCon.AddUser);
 
 //เช็ค Login
-
 router.post(
   "/SignIn",
   passport.authenticate("local", {
@@ -214,130 +75,30 @@ passport.use(
 );
 
 //logout
-router.get("/Signout", function (req, res, next) {
-  req.logout();
-  res.redirect("/Blog");
-});
+router.get("/Signout", UserCon.Logout);
 
 //ViewProfile
-router.get("/ViewProfile/:id", function (req, res, next) {
-  let id = req.params.id;
-  User.getUserById(id, function (err, users) {
-    if (err) throw err;
-    res.render("ViewProfile", { users: users, user: req.user });
-  });
-});
+router.get("/ViewProfile/:id", UserCon.ViewProfile);
 
 //editProfile
-router.get("/EditProfile/:id", function (req, res, next) {
-  let id = req.params.id;
-  User.getUserById(id, function (err, users) {
-    if (err) throw err;
-    res.render("editProfile", { users: users, user: req.user });
-  });
-});
+router.get("/EditProfile/:id", UserCon.EditProfile);
 
 //Update Profile
-router.post("/UpdateProfile/:id", function (req, res, next) {
-  let id = req.params.id;
-  let firstname = req.body.first_name;
-  let lastname = req.body.last_name;
-
-  var User = new UserModel("", " ", firstname, lastname);
-  User.UpdateProfile(id, function (err, success) {
-    if (err) throw err;
-  });
-  res.location("/Blog");
-  res.redirect("/Blog");
-});
+router.post("/UpdateProfile/:id", UserCon.UpdateProfile);
 
 //Verifly
-router.post("/Verifly", function (req, res, next) {
-  let secret_token = req.body.secret_token;
-  let user_secret_token = req.body.user_secret_token;
-  let userId = req.body.userid;
-  console.log(user_secret_token);
-  console.log(secret_token);
+router.post("/Verifly", UserCon.Vertify_User);
 
-  //CheckSecretKey
-  if (user_secret_token == secret_token) {
-    User.SetActive(userId, function (err, success) {
-      if (err) throw err;
-      res.redirect("/Blog");
-    });
-  } else {
-    res.redirect("/User/SignIn");
-  }
-});
+//forgot Password Page
+router.get("/forgotPassword", UserCon.ForgetPassword_Page);
 
 //forgot Password
-router.get("/forgotPassword", function (req, res, next) {
-  res.render("forgotPassword.ejs");
-});
-
-//forgot Password
-router.post("/forgotPassword", function (req, res, next) {
-  let email = req.body.email;
-  User.CheckEmail(email, function (err, success) {
-    console.log("User", success);
-    if (success) {
-      User.getUserByEmail(email, function (err, result) {
-        let secret_token = result[0].secret_token;
-        console.log("GetUSer by email = ", result);
-
-        //compose an email
-        const html = `Hi there, <br/> 
-        Email : ${email} 
-        <br/> <br/> 
-        Please copy verify code and enter to website<br/> 
-        Token : <b>${secret_token}</b>
-        Thank you sir!`;
-
-         // setup email data with unicode symbols
-         const mailOptions = {
-          from: "BlogSE.Project@gmail.com", // sender
-          to: email, // list of receivers
-          subject: "Forgot Password BlogSE",
-          html: html, // HTML body
-        };
-
-        // send mail with defined transport object
-        transporter.sendMail(mailOptions, function (err, info) {
-          if (err) console.log(err);
-          else console.log(info);
-        });
-
-
-        res.redirect("/User/NewPassword");
-      });
-    }
-  });
-});
+router.post("/forgotPassword", UserCon.ForgetPassword);
 
 //User NewPassword
-router.get("/NewPassword", function (req, res, next) {
-  res.render("newPassword.ejs");
-});
+router.get("/NewPassword", UserCon.NewPassword_Page);
 
 //User NewPassword
-router.post("/NewPassword", function (req, res, next) {
-  let email = req.body.email;
-  let key = req.body.key;
-  key = key.trim();
-  let password = req.body.password;
-
-  User.getUserByEmail(email, function (err, result) {
-    let secret_token = result[0].secret_token;
-    let id = result[0]._id;
-    if (key == secret_token) {
-      User.UpdatePassword(id, password, function (err, result) {
-        if (err) throw err;
-      });
-      res.redirect("/User/SignIn");
-    } else {
-      console.log("Error");
-    }
-  });
-});
+router.post("/NewPassword", UserCon.NewPassword);
 
 module.exports = router;

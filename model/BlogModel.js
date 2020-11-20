@@ -1,13 +1,18 @@
 //import database connectDB
 var mongodb = require("mongodb");
-var db = require("monk")("mongodb://heroku_m18k90bt:mb8nu695rnnfkvr9vmamratd6k@ds235243.mlab.com:35243/heroku_m18k90bt");
+// var db = require("monk")("mongodb://heroku_m18k90bt:mb8nu695rnnfkvr9vmamratd6k@ds235243.mlab.com:35243/heroku_m18k90bt");
 // var db = require("monk")("localhost:27017/BlogWeb")
+var db = require("monk")("mongodb+srv://new-user-01:1234@cluster0.vowzx.mongodb.net/BlogWeb?retryWrites=true&w=majority")
 
 //Global Connect Database
 var blogs = db.get("Blogs");
 
 //SetDate
 var moment = require("moment");
+
+//check Validator
+var { check, validationResult } = require("express-validator");
+
 
 class BlogModel {
   constructor(title, content, img, author, category, date, Userid,views) {
@@ -37,6 +42,7 @@ class BlogModel {
     });
   }
 
+
   //Add blog
   AddBlog(callback) {
     let title = this.title;
@@ -55,9 +61,9 @@ class BlogModel {
       category: category,
       date: date,
       Userid: Userid,
-      views: this.views,
+      views: views,
     }),
-      function (err, success) {
+      function(err, success) {
         if (err) throw err;
         else {
           callback(null, success);
