@@ -10,15 +10,23 @@ const randomstring = require("randomstring");
 
 //nodemailer
 const nodemailer = require("nodemailer");
+// const transporter = nodemailer.createTransport({     
+//   host: 'smtp.gmail.com',     
+//   port: 465,     
+//   secure: true,     
+//   auth: {         
+//      type: 'OAuth2',         
+//      user: 'blogse.project@gmail.com',         
+//      accessToken: "ya29.a0AfH6SMBLXBNw8x368liMKC7E5XQ89JGvDg7d-NtYIuNAVPyBPoI9sDtx8dzQZZMhEO7548xgdlw7UYZ7xDfeS3OAmLjwcNUhMtHxNjn7Q_-LKktrDcnc3-_ocd15GcseSCp-M1WWcv4a_IE1_H_8yCmQDRFkZ2XqQXCJkJpPxwg"    
+//   } 
+// });
+// outlook
 const transporter = nodemailer.createTransport({     
-  host: 'smtp.gmail.com',     
-  port: 465,     
-  secure: true,     
-  auth: {         
-     type: 'OAuth2',         
-     user: 'blogse.project@gmail.com',         
-     accessToken: "ya29.a0AfH6SMBLXBNw8x368liMKC7E5XQ89JGvDg7d-NtYIuNAVPyBPoI9sDtx8dzQZZMhEO7548xgdlw7UYZ7xDfeS3OAmLjwcNUhMtHxNjn7Q_-LKktrDcnc3-_ocd15GcseSCp-M1WWcv4a_IE1_H_8yCmQDRFkZ2XqQXCJkJpPxwg"    
-  } 
+  service: 'hotmail',
+  auth: {
+    user: 'blogse.Project@outlook.com', // your email
+    pass: 'husson9032543' // your email password
+  }
 });
 
 class UserController {
@@ -130,7 +138,7 @@ class UserController {
 
             // setup email data with unicode symbols
             const mailOptions = {
-              from: "BlogSE.Project@gmail.com", // sender
+              from: "blogse.Project@outlook.com", // sender
               to: email, // list of receivers
               subject: "Verify Email BlogSE",
               html: html, // HTML body
