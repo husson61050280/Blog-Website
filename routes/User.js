@@ -29,10 +29,11 @@ router.post(
     //login ไม่สำเร็จ
     failureRedirect: "/User/SignIn",
     failureFlash: true,
+    errors = "Username or Password Wrong!"
   }),
 
   // login สมบูรณ์
-  function (req, res) {
+  (req, res) => {
     let users = req.user;
     //check verifly
     if (!users.active) {
