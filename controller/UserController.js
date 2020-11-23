@@ -24,7 +24,7 @@ const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({     
   service: 'hotmail',
   auth: {
-    user: 'blogse.Project@outlook.com', // your email
+    user: 'blogse.Project@outlook.co.th', // your email
     pass: 'husson9032543' // your email password
   }
 });
@@ -138,7 +138,7 @@ class UserController {
 
             // setup email data with unicode symbols
             const mailOptions = {
-              from: "blogse.Project@outlook.com", // sender
+              from: "blogse.Project@outlook.co.th", // sender
               to: email, // list of receivers
               subject: "Verify Email BlogSE",
               html: html, // HTML body
@@ -230,7 +230,7 @@ class UserController {
 
           // setup email data with unicode symbols
           const mailOptions = {
-            from: "BlogSE.Project@gmail.com", // sender
+            from: "blogse.Project@outlook.co.th", // sender
             to: email, // list of receivers
             subject: "Forgot Password BlogSE",
             html: html, // HTML body
