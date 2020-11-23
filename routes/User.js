@@ -29,7 +29,6 @@ router.post(
     //login ไม่สำเร็จ
     failureRedirect: "/User/SignIn",
     failureFlash: true,
-    errors = "Username or Password Wrong!"
   }),
 
   // login สมบูรณ์
