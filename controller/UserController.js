@@ -215,6 +215,10 @@ class UserController {
   ForgetPassword(req, res) {
     let email = req.body.email;
     User.CheckEmail(email, function (err, success) {
+      if (err) {
+        let errors = "Email Not Found. Please Try again"
+        res.render("/User/forgotPassword" , {errors : errors});
+      }
       console.log("User", success);
       if (success) {
         User.getUserByEmail(email, function (err, result) {
@@ -243,10 +247,6 @@ class UserController {
           });
           res.redirect("/User/NewPassword");
         });
-      }
-      else {
-        let errors = "Email Not Found. Please Try again"
-        res.render("/User/forgotPassword" , {errors : errors});
       }
     });
   }
