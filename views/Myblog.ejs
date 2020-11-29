@@ -25,7 +25,7 @@
   </header>
 
   <!-- content zone -->
-  <div class="container" >
+  <div class="container">
     <div class="row">
 
       <!-- category -->
@@ -85,6 +85,28 @@
       </div>
       <!-- row -->
     </div>
+    <!-- Pagination -->
+    <br>
+    <nav aria-label="Page navigation example">
+      <% if (number_page > 1) { %>
+      <ul class="pagination">
+        <% for (i=1; i<= number_page; i++) { %>
+        <li class="page-item
+        <% if (page == i) {%>
+            active
+          <% } %>
+          <% users.forEach(function(user){ %>  
+        ">
+          <% if (check == "cat") { %>
+            <a class="page-link" href="/blog/GroupByCategory/<%= category[0].title%>/<%=user._id%>?page=<%=i%>"><%=i%></a></li>
+            <% } if (check == "My"){  %>
+        <a class="page-link" href="/blog/MyBlog/<%=user._id%>?page=<%=i%>"><%=i%></a></li>
+        <% } %>
+        <%})%>
+        <% } %>
+      </ul>
+      <% } %>
+    </nav>
     <!-- Container -->
   </div>
 

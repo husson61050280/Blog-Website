@@ -60,6 +60,21 @@
       <% }) %>
       <!-- row -->
     </div>
+    <!-- Pagination -->
+    <nav aria-label="Page navigation example">
+      <% if (number_page > 1) { %>
+      <ul class="pagination">
+        <% for (i=1; i<= number_page; i++) { %>
+        <li class="page-item
+        <% if (page == i) {%>
+            active
+          <% } %>
+        "><a class="page-link" href="/blog?page=<%=i%>"><%=i%></a></li>
+      
+        <% } %>
+      </ul>
+      <% } %>
+    </nav>
     <!-- Container -->
   </div>
 

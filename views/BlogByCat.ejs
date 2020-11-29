@@ -32,13 +32,14 @@
     </header>
 
     <!-- content zone -->
-    <div class="container" id="content" >
+    <div class="container" id="content">
         <div class="row">
             <!-- card -->
             <% blogs.forEach(function(blog) { %>
             <div class=".col-6 .col-md-4  " id="blog" data-aos="fade-left">
                 <div class="card" style="width: 20rem;">
-                    <a href= "/Blog/detail/<%=blog._id%>" ><img src="<%=blog.img%>" class="card-img-top" alt="..." width="300px;" height="140px;"></a>
+                    <a href="/Blog/detail/<%=blog._id%>"><img src="<%=blog.img%>" class="card-img-top" alt="..."
+                            width="300px;" height="140px;"></a>
                     <div class="card-body">
                         <h5 class="card-title"><%=blog.title%></h5>
                         <p class="card-text"><%- descriptionText(blog.content,250)%></p>
@@ -57,6 +58,23 @@
             <% }) %>
             <!-- row -->
         </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation example">
+            <% if (number_page > 1) { %>
+            <ul class="pagination">
+                <% for (i=1; i<= number_page; i++) { %>
+                <li class="page-item
+          <% if (page == i) {%>
+              active
+            <% } %>
+          "><a class="page-link" href="/Blog/GroupByCategory/<%= title%>?page=<%=i%>"><%=i%></a></li>
+
+                <% } %>
+            </ul>
+            <% } %>
+        </nav>
+
         <!-- Container -->
     </div>
 </body>
@@ -152,14 +170,14 @@
 
     //animate
     const element = document.querySelector('#content')
-    element.classList.add('animated', 'animate__delay-2s' ,'bounceInLeft')
+    element.classList.add('animated', 'animate__delay-2s', 'bounceInLeft')
 
 </script>
 
 
 <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script>
-  AOS.init();
+    AOS.init();
 </script>
 
 
