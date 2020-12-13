@@ -799,7 +799,7 @@
   }
 
   .readmore2 button {
-    border:black 1px solid;
+    border: black 1px solid;
     color: black;
   }
 
@@ -811,7 +811,10 @@
 
   }
 
-
+  .box {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+  }
 </style>
 
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -918,14 +921,14 @@
 
   <!--latest post-->
   <section class="blog-wrap" id="blog">
-    <div class="container-fluid">
+    <div class="container">
       <h2 class="title-blog wow fadeInUp">RECOMMENDED</h2>
       <div class="hr"></div>
       <p class="subtitle-blog wow fadeInUp">
         NEW ARRIVAL</p>
       <div class="row">
         <% Blogs.forEach(function(Blog) { %>
-        <div class="col-md-4 wow bounceInUp" data-wow-duration="1.4s">
+        <div class=".col-6 .col-md-4 wow bounceInUp" data-wow-duration="1.4s">
           <div class="card">
             <figure class="text-center">
               <img src=<%= Blog.img%> class="img-fluid" width="300px;" height="140px;">
@@ -934,14 +937,15 @@
               <h5 class="card-title"><%= Blog.title%></h5>
               <p class="card-text"><%- descriptionText(Blog.content,100)%></p>
               <div class="readmore2">
-                <a href="/Blog/detail/<%=Blog._id%>"><button type="button" class="btn btn-outline-dark">Read more</button></a>
+                <a href="/Blog/detail/<%=Blog._id%>"><button type="button" class="btn btn-outline-dark">Read
+                    more</button></a>
               </div>
-            </div> 
-          </div>     
+            </div>
+          </div>       
         </div>
         <% }) %>
         <!-- row -->
-      </div>
+     </div>
     </div>
   </section>
 
